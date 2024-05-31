@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <a href="/fruits">Back to the Fruits</a>
+
+  <h1>Piece of <%= fruitDoc.name %></h1>
+  <div>
+    <h3><%= fruitDoc.name %></h3>
+    <% if (fruitDoc.isReadyToEat) { %>
+     <p>This fruit is ready to eat</p>
+    <% } else  { %>
+      <p>This fruit is not ready to eat!  I said don't eat it!!!!!</p>
+     <% } %>
+  </div>
+
+</body>
+</html>
