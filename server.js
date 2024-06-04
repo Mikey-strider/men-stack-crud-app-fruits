@@ -4,7 +4,9 @@ const dotenv = require("dotenv"); // require package
 dotenv.config(); // Loads the environment variables from .env file
 const express = require("express");
 const mongoose = require("mongoose"); // require package
+const methodOverride = require("method-override");
 const morgan = require("morgan");
+const path = require('path')
 
 // ==============Imports Models==================
 const FruitModel = require('./models/fruits')
@@ -27,11 +29,37 @@ app.listen(3000, () => {
 
 
 app.use(express.urlencoded({extended: false}));
+app.use(methodOverride("_method"));
 // to give us req.body!
 
 app.use(morgan('dev'));
+app.use(express.static(path.join(__dirname, 'public')))
 
 // ===========================Our Routes==========================
+
+
+
+app.delete('/fruits/:fruitId', async (req, res) => {
+  const deletedFruit = await FruitModel.findByIdAndDelete(req.params.fruitId);
+  res.redirect('/fruits');
+})
+
+
+app.get('/fruits/:fruitId/edit', async (req, res) => {
+  const fruitDoc =await FruitModel.findByIdAndUpdate(req.params.fruitId);
+  res.render('fruits/edit.ejs', {fruitDoc: fruitDoc});
+})
+
+app.put('/fruits/:fruitId', async (req, res) => {
+  req.body.isReadyToEat = !!req.body.isReadyToEat;
+  const fruit = await FruitModel.findByIdAndUpdate(req.params.fruitId, req.body, {new: true})
+  console.log(fruit)
+  res.redirect(`/fruits/${req.params.fruitId}`)
+
+})
+
+
+
 
 
 // The Create Routes
@@ -72,8 +100,8 @@ app.get('/fruits', async (req, res) => {
 app.get('/fruits/:fruitId', async (req, res) => {
     // we need to go to the databse and get the fruit by its ID, then inject it into
     // the show.ejs
-  const fruitDoc = await FruitModel.findById(req.params.fruitId)
-  res.render('fruits/show.ejs', {fruitDoc: fruitDoc})
+  const fruitDoc = await FruitModel.findById(req.params.fruitId);
+  res.render('fruits/show.ejs', {fruitDoc: fruitDoc});
 })
 
 
